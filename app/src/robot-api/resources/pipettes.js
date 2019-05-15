@@ -1,6 +1,7 @@
 // @flow
 import {
   getRobotApiState,
+  getRobotApiRequestState,
   createBaseRobotApiEpic,
   passRobotApiResponseAction,
   GET,
@@ -10,6 +11,7 @@ import type { ActionLike, State as AppState } from '../../types'
 import type {
   RobotApiAction,
   RobotHost,
+  RobotApiRequestState,
   PipettesState as State,
 } from '../types'
 
@@ -45,4 +47,11 @@ export function pipettesReducer(
 
 export function getPipettesState(state: AppState, robotName: string): State {
   return getRobotApiState(state, robotName)?.resources.pipettes || INITIAL_STATE
+}
+
+export function getPipettesRequestState(
+  state: AppState,
+  robotName: string
+): RobotApiRequestState | null {
+  return getRobotApiRequestState(state, robotName, PIPETTES_PATH)
 }

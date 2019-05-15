@@ -18,7 +18,7 @@ import type { Mount } from '../../robot'
 import type { Robot } from '../../discovery'
 import type { Direction, ChangePipetteProps } from './types'
 import type { RobotHome, RobotMove } from '../../http-api-client'
-
+import type { RobotApiRequestState } from '../../robot-api'
 import {
   home,
   moveRobotTo,
@@ -27,7 +27,11 @@ import {
   makeGetRobotHome,
 } from '../../http-api-client'
 
-import { fetchPipettes, getPipettesState } from '../../robot-api'
+import {
+  fetchPipettes,
+  getPipettesState,
+  getPipettesRequestState,
+} from '../../robot-api'
 
 import ClearDeckAlertModal from '../ClearDeckAlertModal'
 import ExitAlertModal from './ExitAlertModal'
@@ -62,6 +66,7 @@ type SP = {|
   moveRequest: RobotMove,
   homeRequest: RobotHome,
   actualPipette: ?PipetteModelSpecs,
+  checkRequest: RobotApiRequestState | null,
   displayName: string,
   direction: Direction,
   success: boolean,
@@ -75,7 +80,7 @@ type DP = {|
   onPipetteSelect: $PropertyType<PipetteSelectionProps, 'onChange'>,
   moveToFront: () => mixed,
   checkPipette: () => mixed,
-  confirmPipette: () => mixed,
+  goToConfirmUrl: () => mixed,
 |}
 
 const ConnectedChangePipetteRouter = withRouter<OP>(
@@ -143,8 +148,9 @@ function makeMapStateToProps(): (State, OP) => SP {
       success,
       attachedWrong,
       displayName,
-      moveRequest: getRobotMove(state, ownProps.robot),
-      homeRequest: getRobotHome(state, ownProps.robot),
+      checkRequest: getPipettesRequestState(state, robot.name),
+      moveRequest: getRobotMove(state, robot),
+      homeRequest: getRobotHome(state, robot),
       __pipettePlusEnabled: Boolean(
         getConfig(state).devInternal?.enablePipettePlus
       ),
@@ -171,7 +177,7 @@ function mapDispatchToProps(dispatch: Dispatch, ownProps: OP): DP {
           position: 'change_pipette',
         })
       ).then(disengage),
-    confirmPipette: () => checkPipette().then(() => dispatch(push(confirmUrl))),
+    goToConfirmUrl: () => dispatch(push(confirmUrl)),
   }
 }
 

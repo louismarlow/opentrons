@@ -9,13 +9,34 @@ import InstructionStep from './InstructionStep'
 import styles from './styles.css'
 
 import type { ButtonProps } from '@opentrons/components'
+import type { RobotApiRequestState } from '../../robot-api'
 import type { ChangePipetteProps } from './types'
 
 const ATTACH_CONFIRM = 'have robot check connection'
 const DETACH_CONFIRM = 'confirm pipette is detached'
 
 export default function Instructions(props: ChangePipetteProps) {
-  const { wantedPipette, actualPipette, direction, displayName } = props
+  const {
+    wantedPipette,
+    actualPipette,
+    checkRequest,
+    direction,
+    displayName,
+  } = props
+
+  const prevCheckRequest = React.useRef<RobotApiRequestState | null>(null)
+
+  // TODO(mc, 2019-05-15): extract to "do something when request resolves" hook
+  React.useEffect(() => {
+    const prevResponse = prevCheckRequest.current?.response
+    const nextResponse = checkRequest?.response
+
+    if (prevCheckRequest.current && !prevResponse && nextResponse) {
+      props.goToConfirmUrl()
+    }
+
+    prevCheckRequest.current = checkRequest
+  }, [checkRequest])
 
   const titleBar = {
     ...props,
@@ -42,7 +63,7 @@ export default function Instructions(props: ChangePipetteProps) {
       {(actualPipette || wantedPipette) && (
         <div>
           <Steps {...props} />
-          <CheckButton onClick={props.confirmPipette}>
+          <CheckButton onClick={props.checkPipette}>
             {actualPipette ? DETACH_CONFIRM : ATTACH_CONFIRM}
           </CheckButton>
         </div>
