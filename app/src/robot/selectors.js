@@ -433,14 +433,3 @@ export function getOffsetUpdateInProgress(state: State): boolean {
 
   return request.type === 'UPDATE_OFFSET' && request.inProgress
 }
-
-// get current pipette selector factory
-// to be used by a react-router Route component
-export const makeGetCurrentPipette = () => {
-  // $FlowFixMe: (mc, 2019-04-17): untyped RPC state selector
-  return createSelector(
-    (_, props: ContextRouter) => props.match.params.mount,
-    getPipettes,
-    (mount, pipettes) => pipettes.find(i => i.mount === mount)
-  )
-}

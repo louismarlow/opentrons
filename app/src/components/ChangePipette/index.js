@@ -22,12 +22,12 @@ import type { RobotHome, RobotMove } from '../../http-api-client'
 import {
   home,
   moveRobotTo,
-  fetchPipettes,
   disengagePipetteMotors,
   makeGetRobotMove,
   makeGetRobotHome,
-  makeGetRobotPipettes,
 } from '../../http-api-client'
+
+import { fetchPipettes, getPipettesState } from '../../robot-api'
 
 import ClearDeckAlertModal from '../ClearDeckAlertModal'
 import ExitAlertModal from './ExitAlertModal'
@@ -121,13 +121,11 @@ function ChangePipetteRouter(props: ChangePipetteProps) {
 function makeMapStateToProps(): (State, OP) => SP {
   const getRobotMove = makeGetRobotMove()
   const getRobotHome = makeGetRobotHome()
-  const getRobotPipettes = makeGetRobotPipettes()
 
   return (state, ownProps) => {
-    const { mount, wantedPipette } = ownProps
-    const pipettes = getRobotPipettes(state, ownProps.robot).response
-    const model = pipettes && pipettes[mount] && pipettes[mount].model
-    const actualPipette = model ? getPipetteModelSpecs(model) : null
+    const { mount, wantedPipette, robot } = ownProps
+    const pipettes = getPipettesState(state, robot.name)
+    const actualPipette = getPipetteModelSpecs(pipettes[mount]?.model || '')
     const direction = actualPipette ? 'detach' : 'attach'
 
     const success =
