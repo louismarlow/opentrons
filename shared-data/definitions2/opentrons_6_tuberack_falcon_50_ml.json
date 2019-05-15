@@ -83,5 +83,13 @@
     "isTiprack": false,
     "isMagneticModuleCompatible": false,
     "loadName": "opentrons_6_tuberack_falcon_50_ml"
-  }
+  },
+  "grids": [
+    {
+      "wells": ["A1", "B1", "A2", "B2", "A3", "B3"],
+      "metadata": {
+        "wellBottomShape": ""
+      }
+    }
+  ]
 }

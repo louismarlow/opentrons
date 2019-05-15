@@ -227,6 +227,32 @@
           }
         }
       }
+    },
+    "grids": {
+      "type": "array",
+      "description": "Generated array that keeps track of how wells should grouped in a labware",
+      "items": {
+        "type": "object",
+        "properties": {
+          "wells": {
+            "type": "array",
+            "description": "An array of wells that contain the same metadata",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "metadata": {
+            "type": "object",
+            "description": "Metadata specific to a grid of wells in a labware",
+            "properties": {
+              "wellBottomShape": { "type": "string" }
+            }
+          }
+        }
+      }
     }
   }
 }
