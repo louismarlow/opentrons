@@ -6,7 +6,6 @@ import { createSelector } from 'reselect'
 import omitBy from 'lodash/omitBy'
 import { type ConnectionStatus, PIPETTE_MOUNTS, DECK_SLOTS } from './constants'
 
-import type { ContextRouter } from 'react-router'
 import type { OutputSelector } from 'reselect'
 import type { State } from '../types'
 import type {
